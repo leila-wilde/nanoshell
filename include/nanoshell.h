@@ -24,6 +24,6 @@ void builtin_pwd(void); // print working directory command
 void builtin_env(void);  // display env variables command
 char *find_in_path(const char *command);// search for an executable in the PATH env variable
 
-void execute_external(char *arguments[]); // execute external programs (not built-in to our shell)
+int execute_external(char *arguments[]); // execute external programs (not built-in to our shell)
 
 #endif
