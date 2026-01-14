@@ -1,5 +1,5 @@
 // nanoshell.c
-
+#include <stdio.h>
 #include "../include/nanoshell.h"
 
 int main() {
@@ -7,7 +7,7 @@ int main() {
     char *arguments[MAX_ARGUMENTS] = {NULL}; // initialise all pointers to NULL
  
     while(1) {
-        printf("?>"); // prompt user
+        print_prompt();
         
         // check if input is read properly
         if (fgets(input, MAX_USER_INPUT, stdin) == NULL) {
@@ -23,6 +23,11 @@ int main() {
     return 0;
 }
 
+// function to prompt user input
+void print_prompt(void){
+    printf("?> ");
+    fflush(stdout); //force output to appear immediately
+}
 // funtion to parse input into arguments
 void split_arguments(char *input, char *arguments[]) {
     // remove newline character
