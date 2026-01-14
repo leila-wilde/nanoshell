@@ -16,14 +16,14 @@
 // draft function prototypes/declarations:
 
 void print_prompt(void); // lets put it in a function for better design
-void split_arguements(char *input, char **arguments); //parse user input and split it into separate arguments
+void split_arguments(char *input, char *arguments[]); //parse user input and split it into separate arguments
 
 int is_builtin(const char *command); // check if a command is built-in (cd, pwd, exit, env)
-void builtin_cd(char **arguments); //change directory command
+void builtin_cd(char *arguments[]); //change directory command
 void builtin_pwd(void); // print working directory command
 void builtin_env(void);  // display env variables command
 char *find_in_path(const char *command);// search for an executable in the PATH env variable
 
-void execute_external(char **arguments); // execute external programs (not built-in to our shell)
+void execute_external(char *arguments[]); // execute external programs (not built-in to our shell)
 
 #endif
