@@ -1,4 +1,6 @@
-#include "include/nanoshell.h"
+// nanoshell.c
+
+#include "../include/nanoshell.h"
 
 int main() {
     char input[MAX_USER_INPUT];
@@ -13,21 +15,25 @@ int main() {
         } 
         
         // parse input into arguments
-        parse_input(input, arguments);
+        split_arguments(input, arguments);
 
         // execute the command 
-        int result = execute_command(arguments);
+        int result = execute_external(arguments);
     }
     return 0;
 }
 
 // funtion to parse input into arguments
 void split_arguments(char *input, char *arguments[]) {
+    // remove newline character
+    input[strcspn(input, "\n")] = 0;
+
     // reset arguments array
     for (int i = 0; i < MAX_USER_INPUT; i++) {
         arguments[i] = NULL;
     }
     // tokenize the input
+    return; // todo
 
 }
 
@@ -48,4 +54,3 @@ int execute_external(char *arguments[]) {
 
     return 1;
 }
-
