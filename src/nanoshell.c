@@ -1,5 +1,5 @@
 // nanoshell.c
-#include <stdio.h>
+
 #include "../include/nanoshell.h"
 
 int main() {
