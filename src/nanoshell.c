@@ -1,5 +1,5 @@
 // nanoshell.c
-
+#include <stdio.h>
 #include "../include/nanoshell.h"
 
 int main() {
@@ -36,15 +36,41 @@ void print_prompt(void){
 void split_arguments(char *input, char *arguments[]) {
     // remove newline character
     input[strcspn(input, "\n")] = 0;
-
     // reset arguments array
     for (int i = 0; i < MAX_USER_INPUT; i++) {
         arguments[i] = NULL;
     }
-    // tokenize the input
-    return; // todo
+ 
+    int i=0;
+    int a=0;
 
+
+    while (input[i]!=' \0'){
+
+    while (input[i]==' ' || input[i]=='\t')
+        i++;
+
+    if (input[i]=='\0')
+        break;
+
+        arguments[a]=malloc (512);
+        int k=0;
+
+        while (input[i]!=' ' && input[i]!='\t' && input[i]!='\0'){
+            arguments[a][k]=input[i];
+            i++;
+            k++;
+        }
+        arguments[a][k]='\0';
+        a++;
+    }
+    arguments[a]= NULL;
+    free(arguments[a]);
 }
+
+
+
+
 
 // function to execute commands 
 int execute_external(char *arguments[]) {
