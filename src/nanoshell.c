@@ -47,7 +47,7 @@ void split_arguments(char *input, char *arguments[]) {
     int a=0;
 
 
-    while (input[i]!=' \0'){
+    while (input[i]!='\0'){
 
     while (input[i]==' ' || input[i]=='\t')
         i++;
@@ -69,6 +69,12 @@ void split_arguments(char *input, char *arguments[]) {
     arguments[a]= NULL;
     free(arguments[a]);
 }
+
+// function to find the command
+char *find_in_path(const char *command) {
+    return strdup(command); //to do
+}
+
 
 // function to execute commands 
 int execute_external(char *arguments[]) {
