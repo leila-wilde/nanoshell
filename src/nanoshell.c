@@ -80,5 +80,7 @@ int execute_external(char *arguments[]) {
     // parent process (wait for child process to finish)
     waitpid(pid, NULL, 0);
 
+    free(path);
+
     return 1;
 }
