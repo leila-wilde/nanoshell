@@ -1,5 +1,5 @@
 // nanoshell.c
-#include <stdio.h>
+
 #include "../include/nanoshell.h"
 
 int main() {
@@ -18,8 +18,12 @@ int main() {
         split_arguments(input, arguments);
 
         // execute the command 
-        int result = execute_external(arguments);
+        int command = execute_external(arguments);
+        if (command == 0) {
+            break; // exit shell if command was 'exit' 
+        }
     }
+    
     return 0;
 }
 
@@ -50,7 +54,7 @@ int execute_external(char *arguments[]) {
     }
 
     // check for exit command 
-    if (strcmp(arguments[0], "exit") == 0) {
+    if (strcasecmp(arguments[0], "exit") == 0) {
         return 0; 
     }
 
