@@ -18,8 +18,12 @@ int main() {
         split_arguments(input, arguments);
 
         // execute the command 
-        int result = execute_external(arguments);
+        int command = execute_external(arguments);
+        if (command == 0) {
+            break; // exit shell if command was 'exit' 
+        }
     }
+    
     return 0;
 }
 
@@ -44,18 +48,39 @@ void split_arguments(char *input, char *arguments[]) {
 
 // function to execute commands 
 int execute_external(char *arguments[]) {
+    pid_t pid = -1;
+
     // check if no command was entered 
     if (arguments[0] == NULL) {
         return 1;
     }
 
     // check for exit command 
-    if (strcmp(arguments[0], "exit") == 0) {
+    if (strcasecmp(arguments[0], "exit") == 0) {
         return 0; 
     }
+    // check for built-in commands
+    // todo
 
-    // just print the command for now
-    printf("Vous avez entre: %s", arguments[0]);
+    // find the command using the path
+    char *path = find_in_path(arguments[0]);
+    if (path == NULL) {
+        printf("Commande non trouvé: %s\n", arguments[0]);
+        return 1;
+    }
+    
+    pid = fork();
+    if (pid == 0) {
+        // child process
+        char *env[] = {NULL}; // null-terminated list of environment variables
+        execve(path, arguments, env);
+        exit(-1);
+    }
+
+    // parent process (wait for child process to finish)
+    waitpid(pid, NULL, 0);
+
+    free(path);
 
     return 1;
 }
