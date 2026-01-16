@@ -1,7 +1,6 @@
 NAME=nanoshell
 FLAGS=-Wall -Wextra -Werror
-
-SRC=src/nanoshell.c
+SRC=last.c
 
 all:
 	gcc $(FLAGS) -o $(NAME) $(SRC)
