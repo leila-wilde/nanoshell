@@ -7,6 +7,7 @@
 #include <stdlib.h> // memory management and system utilities (exit, malloc)
 #include <unistd.h> // Unix system calls (chdir, getcwd, fork, execve)
 #include <string.h> // string operations (strcmp, strcpy, strlen)
+#include <strings.h> // (strcasecmp)
 #include <sys/wait.h>   // wait functions (waitpid) - use when waiting for child processes
 #include <sys/types.h>  // type definitions used by system calls (pid_t)
 
