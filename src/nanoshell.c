@@ -45,7 +45,7 @@ void split_arguments(char *input, char *arguments[]) {
     input[strcspn(input, "\n")] = 0;
 
     // reset arguments array
-    for (int i = 0; i < MAX_USER_INPUT; i++) {
+    for (int i = 0; i < MAX_ARGUMENTS; i++) {
         arguments[i] = NULL;
     }
     
