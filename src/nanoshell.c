@@ -107,7 +107,7 @@ int execute_external(char *arguments[]) {
     // try to find the executable command in each path
     for (int i = 0; paths[i] != NULL; i++) {
         // create the full path
-        snprintf(full_path, sizeof(full_path), "%s%s", paths[i], arguments[0]);
+        snprintf(full_path, sizeof(full_path), "%s/%s", paths[i], arguments[0]);
         
         // check if the file exists and is executable
         if (access(full_path, X_OK) == 0) {
