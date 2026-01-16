@@ -49,13 +49,15 @@ void split_arguments(char *input, char *arguments[]) {
 
     while (input[i]!='\0'){
 
-    while (input[i]==' ' || input[i]=='\t')
+    while (input[i]==' ' || input[i]=='\t') {
         i++;
+    }
 
-    if (input[i]=='\0')
+    if (input[i]=='\0') {
         break;
+    }
 
-        arguments[a]=malloc (512);
+        arguments[a]= malloc(512);
         int k=0;
 
         while (input[i]!=' ' && input[i]!='\t' && input[i]!='\0'){
@@ -63,11 +65,11 @@ void split_arguments(char *input, char *arguments[]) {
             i++;
             k++;
         }
-        arguments[a][k]='\0';
-        a++;
+    arguments[a][k]='\0';
+    a++;
     }
     arguments[a]= NULL;
-    free(arguments[a]);
+    
 }
 
 // function to find the command
@@ -113,4 +115,61 @@ int execute_external(char *arguments[]) {
     free(path);
 
     return 1;
+}
+
+
+void builtin_pwd(void){
+    char cwd[1024];
+
+    if (getcwd(cwd, sizeof(cwd))!=NULL) {
+        printf("%s\n", cwd);
+    } else {
+        printf("error, pwd not valid");
+    }
+}
+
+void builtin_cd(char *arguments[]) {
+    if (arguments[1] == NULL) {
+        char *home = getenv("HOME");
+        if (home == NULL) {
+            printf("cd: HOME not set\n");
+            return;
+        }
+        if (chdir(home) != 0) {
+            printf("error, cannot change to HOME\n");
+        }
+    } else {
+        if (chdir(arguments[1]) != 0) {
+            printf("error, argument not valid\n");
+        }
+    }
+}
+
+
+
+void builtin_env(void){
+
+    extern char **environ; // pointeur vers toutes les variables d'environnement
+    char **env = environ;
+
+    while (*env) {
+        printf("%s\n", *env);
+        env++;
+    }
+}
+
+int is_builtin(char *command, char *arguments[]) {
+    if (command[0]== 'p' && command[1]=='w' && command[2]=='d') {
+        builtin_pwd();
+        return 1;
+    } else if (command[0]== 'c' && command[1]=='d') {
+        builtin_cd(arguments);
+        return 1;
+    } else if (command[0]== 'e' && command[1]=='n' && command[2]=='v') {
+        builtin_env();
+        return 1;
+    } else {
+        printf("command not valid");
+        return 0;
+    }
 }

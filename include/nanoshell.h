@@ -18,7 +18,8 @@
 void print_prompt(void); // lets put it in a function for better design
 void split_arguments(char *input, char *arguments[]); //parse user input and split it into separate arguments
 
-int is_builtin(const char *command); // check if a command is built-in (cd, pwd, exit, env)
+int is_builtin(char *command, char *arguments[]);
+ // check if a command is built-in (cd, pwd, exit, env)
 void builtin_cd(char *arguments[]); //change directory command
 void builtin_pwd(void); // print working directory command
 void builtin_env(void);  // display env variables command
