@@ -15,9 +15,16 @@ int main() {
         
         // parse input into arguments
         split_arguments(input, arguments);
-
+        
         // execute the command 
         int command = execute_external(arguments);
+
+        // free the allocated memory
+        for (int i = 0; arguments[i] != NULL; i++) {
+            free(arguments[i]);
+            arguments[i] = NULL;
+        }
+
         if (command == 0) {
             break; // exit shell if command was 'exit' 
         }
@@ -49,37 +56,31 @@ void split_arguments(char *input, char *arguments[]) {
 
     while (input[i]!='\0'){
 
-    while (input[i]==' ' || input[i]=='\t')
+    while (input[i]==' ' || input[i]=='\t') {
         i++;
+    }
 
-    if (input[i]=='\0')
+    if(input[i]=='\0') {
         break;
+    }
 
-        arguments[a]=malloc (512);
-        int k=0;
+    arguments[a]= malloc(512);
+    int k=0;
 
-        while (input[i]!=' ' && input[i]!='\t' && input[i]!='\0'){
-            arguments[a][k]=input[i];
-            i++;
-            k++;
-        }
-        arguments[a][k]='\0';
-        a++;
+    while (input[i]!=' ' && input[i]!='\t' && input[i]!='\0'){
+        arguments[a][k]=input[i];
+        i++;
+        k++;
+    }
+    arguments[a][k]='\0';
+    a++;
     }
     arguments[a]= NULL;
-    free(arguments[a]);
 }
-
-// function to find the command
-char *find_in_path(const char *command) {
-    return strdup(command); //to do
-}
-
 
 // function to execute commands 
 int execute_external(char *arguments[]) {
-    pid_t pid = -1;
-
+    
     // check if no command was entered 
     if (arguments[0] == NULL) {
         return 1;
@@ -89,28 +90,57 @@ int execute_external(char *arguments[]) {
     if (strcasecmp(arguments[0], "exit") == 0) {
         return 0; 
     }
-    // check for built-in commands
-    // todo
+   // search system paths for the command
+    const char *paths[] = {
+        "/usr/local/bin",
+        "/usr/bin",
+        "/bin",
+        "/usr/sbin",
+        "/sbin",
+        NULL
+    };
 
-    // find the command using the path
-    char *path = find_in_path(arguments[0]);
-    if (path == NULL) {
+    char full_path[MAX_USER_INPUT];
+    int executable = 0;
+    char *path = NULL;
+
+    // try to find the executable command in each path
+    for (int i = 0; paths[i] != NULL; i++) {
+        // create the full path
+        snprintf(full_path, sizeof(full_path), "%s%s", paths[i], arguments[0]);
+        
+        // check if the file exists and is executable
+        if (access(full_path, X_OK) == 0) {
+            executable = 1;
+            path = full_path;
+            break;
+        }
+    }
+    
+    // if its executable --> fork & execute the command
+    if(executable) {
+        pid_t pid = fork();
+        if (pid == 0) {
+            // child process
+            char *env[] = {NULL}; // null-terminated list of environment variables
+            execve(path, arguments, env);
+            
+            // if execve fails
+            perror("execve");
+            exit(-1);
+        
+        } else if(pid > 0) {
+            // parent process
+            waitpid(pid, NULL, 0);
+        } else {
+            // fork failed
+            perror("fork failed :(");
+            return 1;
+        }
+    } else if (path == NULL) {
         printf("Commande non trouvé: %s\n", arguments[0]);
         return 1;
     }
-    
-    pid = fork();
-    if (pid == 0) {
-        // child process
-        char *env[] = {NULL}; // null-terminated list of environment variables
-        execve(path, arguments, env);
-        exit(-1);
-    }
-
-    // parent process (wait for child process to finish)
-    waitpid(pid, NULL, 0);
-
-    free(path);
 
     return 1;
 }
